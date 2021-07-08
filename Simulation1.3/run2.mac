@@ -1,0 +1,21 @@
+#
+/control/verbose 0
+/run/verbose 0
+/vis/verbose 0
+/process/verbose 0
+#/tracking/verbose 1
+#
+/run/initialize
+/process/eLoss/verbose 0
+#
+/gun/particle gamma
+#/MySimulation/gun/direction -0.01875 0 -1 #0.02498 half
+/MySimulation/gun/direction 0 0 -1
+/MySimulation/gun/energy 6 keV 
+/MySimulation/gun/position 0 0 5. mm
+/MySimulation/gun/polarization 0 1 0
+/MySimulation/gun/partpolarization 1
+/MySimulation/gun/gaussSigma 0 #30" 对应0.0027778421
+/run/printProgress 1000
+#/run/beamOn 10000000
+/run/beamOn 100000

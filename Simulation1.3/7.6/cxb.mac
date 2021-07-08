@@ -1,0 +1,54 @@
+#GPS macro file for cxb photon 
+/run/initialize
+/control/verbose 2
+/run/verbose 2
+/gps/particle gamma
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 0. 0 cm
+/gps/pos/radius 30 cm
+/gps/ang/type cos
+/gps/ang/minphi 0 
+/gps/ang/maxphi 3.14159
+/gps/ene/type User
+/gps/hist/type energy
+/gps/hist/point 0.001 0
+/gps/hist/point 0.00121517 1.45302
+/gps/hist/point 0.00147663 1.36528
+/gps/hist/point 0.00179436 1.28124
+/gps/hist/point 0.00218044 1.20057
+/gps/hist/point 0.0026496 1.12291
+/gps/hist/point 0.00321971 1.04794
+/gps/hist/point 0.00391249 0.975337
+/gps/hist/point 0.00475434 0.904781
+/gps/hist/point 0.00577731 0.835983
+/gps/hist/point 0.00702041 0.768676
+/gps/hist/point 0.00853097 0.702631
+/gps/hist/point 0.0103666 0.637676
+/gps/hist/point 0.0125971 0.573711
+/gps/hist/point 0.0153076 0.510733
+/gps/hist/point 0.0186013 0.448865
+/gps/hist/point 0.0226037 0.388386
+/gps/hist/point 0.0274673 0.329748
+/gps/hist/point 0.0333774 0.273596
+/gps/hist/point 0.0405591 0.220752
+/gps/hist/point 0.0492861 0.172176
+/gps/hist/point 0.0598909 0.128874
+/gps/hist/point 0.0727775 0.0929952
+/gps/hist/point 0.0884368 0.0675281
+/gps/hist/point 0.107466 0.0495427
+/gps/hist/point 0.130589 0.036539
+/gps/hist/point 0.158687 0.0270262
+/gps/hist/point 0.192832 0.0200262
+/gps/hist/point 0.234323 0.0148592
+/gps/hist/point 0.284741 0.0110384
+/gps/hist/point 0.346008 0.0082094
+/gps/hist/point 0.420458 0.00611263
+/gps/hist/point 0.510927 0.00455705
+/gps/hist/point 0.620863 0.00340186
+/gps/hist/point 0.754452 0.00254311
+/gps/hist/point 0.916786 0.00190403
+/gps/hist/point 1.11405 0.00142787
+/gps/hist/point 1.35376 0.00107263
+/gps/hist/point 1.64504 0.000807251
+/run/beamOn 295508322
