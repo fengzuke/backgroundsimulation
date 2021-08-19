@@ -1,0 +1,8 @@
+/home/fzk/backkground2/8.19/CMakeFiles/install/strip.dir
+/home/fzk/backkground2/8.19/CMakeFiles/install/local.dir
+/home/fzk/backkground2/8.19/CMakeFiles/edit_cache.dir
+/home/fzk/backkground2/8.19/CMakeFiles/Background.dir
+/home/fzk/backkground2/8.19/CMakeFiles/install.dir
+/home/fzk/backkground2/8.19/CMakeFiles/list_install_components.dir
+/home/fzk/backkground2/8.19/CMakeFiles/rebuild_cache.dir
+/home/fzk/backkground2/8.19/CMakeFiles/background.dir

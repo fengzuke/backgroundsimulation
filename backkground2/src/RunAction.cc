@@ -24,6 +24,7 @@ RunAction::RunAction()
 RunAction::~RunAction()
 {
 	delete runmessenger;
+	delete G4AnalysisManager::Instance(); 
 }
 
 void RunAction::datastore()
@@ -47,6 +48,7 @@ void RunAction::datastore()
 
 void RunAction::BeginOfRunAction(const G4Run* arun)
 {
+	outputfilename="./data/result.root";
 	G4cout << "Run " << arun->GetRunID() << " start." << G4endl;
 	G4cout << "--------------------------------Run start----------------------------------" << G4endl;
 	G4AnalysisManager* analysismanager = G4AnalysisManager::Instance();

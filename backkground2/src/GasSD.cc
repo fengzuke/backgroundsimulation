@@ -76,8 +76,8 @@ G4bool GasSD::ProcessHits(G4Step* astep, G4TouchableHistory*)
   if ( ParentID==1 && astep->IsFirstStepInVolume() )
 	{
 	  n+=1;
-      analysismanager->FillNtupleDColumn(0,Ek);
-      analysismanager->FillNtupleDColumn(1,n);
+      analysismanager->FillNtupleDColumn(1,Ek);
+      analysismanager->FillNtupleDColumn(2,n);
 	  analysismanager->AddNtupleRow();
 	}
 
