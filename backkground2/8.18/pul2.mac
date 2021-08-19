@@ -1,0 +1,51 @@
+# 分析结果保存方法
+#   1. 用G4自带的ntuple保存(G4Based)
+#   2. 用root+自定义类的方式保存(RootBased)
+#-----
+
+
+#GPS macro file for pulsar photon 
+/RunAction/SetDataStoreFileName ./data/result.root
+/run/initialize
+/control/verbose 0	
+/tracking/verbose 0
+/run/verbose 0
+/gps/particle gamma
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre 0. 0. 3.248 cm
+/gps/pos/radius 0.5 cm
+/gps/direction 0 0 -1
+/gps/ene/type User
+/gps/hist/type energy
+/gps/hist/point 0.00107842 0.729577
+/gps/hist/point 0.00116299 0.72409
+/gps/hist/point 0.0012542 0.718644
+/gps/hist/point 0.00135255 0.713238
+/gps/hist/point 0.00145862 0.707874
+/gps/hist/point 0.00157301 0.70255
+/gps/hist/point 0.00169637 0.697265
+/gps/hist/point 0.0018294 0.692021
+/gps/hist/point 0.00197286 0.686816
+/gps/hist/point 0.00212758 0.68165
+/gps/hist/point 0.00229443 0.676523
+/gps/hist/point 0.00247436 0.671435
+/gps/hist/point 0.0026684 0.666385
+/gps/hist/point 0.00287766 0.661373
+/gps/hist/point 0.00310333 0.656398
+/gps/hist/point 0.0033467 0.651461
+/gps/hist/point 0.00360915 0.646561
+/gps/hist/point 0.00389219 0.641698
+/gps/hist/point 0.00419742 0.636872
+/gps/hist/point 0.00452659 0.632081
+/gps/hist/point 0.00488157 0.627327
+/gps/hist/point 0.00526439 0.622609
+/gps/hist/point 0.00567723 0.617926
+/gps/hist/point 0.00612245 0.613278
+/gps/hist/point 0.00660258 0.608666
+/gps/hist/point 0.00712037 0.604088
+/gps/hist/point 0.00767876 0.599544
+/gps/hist/point 0.00828094 0.595035
+/gps/hist/point 0.00893034 0.590559
+/gps/hist/point 0.00963067 0.586117
+/run/beamOn 1456
