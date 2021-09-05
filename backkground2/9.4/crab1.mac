@@ -6,7 +6,7 @@
 /gps/particle gamma
 /gps/pos/type Plane
 /gps/pos/shape Circle
-/gps/pos/centre 0. 0. 10 cm
+/gps/pos/centre 4.4 0. 10 cm
 /gps/pos/radius 0.5 cm
 /gps/direction 0 0 -1
 /gps/ene/type User
