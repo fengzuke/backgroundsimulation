@@ -1,33 +1,3 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-// $Id: backgroundDetectorConstruction.cc 94307 2015-11-11 13:42:46Z gcosmo $
-//
-/// \file backgroundDetectorConstruction.cc
-/// \brief Implementation of the backgroundDetectorConstruction class
-
 #include "backgroundDetectorConstruction.hh"
 #include "G4Material.hh"
 
@@ -46,7 +16,7 @@
 
 #include "G4SDManager.hh"
 #include "GasSD.hh"
-
+#include "BeWindowSD.hh"
 
 #include "G4PhysicalConstants.hh"
 
@@ -73,6 +43,10 @@ G4VPhysicalVolume* backgroundDetectorConstruction::Construct()
   G4Material* Ne_50_DME_50   = nist->FindOrBuildMaterial("Ne_50_DME_50");
   G4Material* ceramics   = nist->FindOrBuildMaterial("ceramics");
   G4Material* Kovar   = nist->FindOrBuildMaterial("Kovar");
+  G4Material* G4_Be = nist->FindOrBuildMaterial("G4_Be");
+  G4Material* SSteel = nist->FindOrBuildMaterial("SSteel");
+  G4Material* Scintillator = nist->FindOrBuildMaterial("Scintillator");
+  G4Material* Aluminium = nist->FindOrBuildMaterial("Aluminium");
   // Option to switch on/off checking of volumes overlaps
   //
   G4bool checkOverlaps = true;
@@ -103,10 +77,13 @@ G4VPhysicalVolume* backgroundDetectorConstruction::Construct()
   //     
   // Detector
   //
-  G4double detector_sizeXYZ = 100 * mm;
+  G4double detector_sizeX = 40 * mm;
+  G4double detector_sizeY = 40 * mm;
+  G4double detector_sizeZ = 21 * mm;
+
   G4Box* solidDetector =    
     new G4Box("Detector",                       //its name
-       0.5*detector_sizeXYZ, 0.5*detector_sizeXYZ, 0.5*detector_sizeXYZ);     //its size
+       0.5*detector_sizeX, 0.5*detector_sizeY, 0.5*detector_sizeZ);     //its size
       
   G4LogicalVolume* logicDetector =                         
     new G4LogicalVolume(solidDetector,       //its solid
@@ -115,18 +92,209 @@ G4VPhysicalVolume* backgroundDetectorConstruction::Construct()
                                    
   G4VPhysicalVolume* physDetector = 
     new G4PVPlacement(0,                     //no rotation
-                      G4ThreeVector(),       //at (0,0,0)
+                      G4ThreeVector(0,0,0),       //at (0,0,0)
                       logicDetector,         //its logical volume
                       "Detector",            //its name
                       logicWorld,            //its mother  volume
                       false,                 //no boolean operation
                       0,                     //copy number
                       checkOverlaps);        //overlaps checking
+
+  //     
+  // Detector2
+  //
+
+
+    new G4PVPlacement(0,                     //no rotation
+                      G4ThreeVector(44,0,0),       //at (0,0,0)
+                      logicDetector,         //its logical volume
+                      "Detector",            //its name
+                      logicWorld,            //its mother  volume
+                      false,                 //no boolean operation
+                      1,                     //copy number
+                      checkOverlaps);        //overlaps checking
+
+
+  //     
+  // Scintillator1
+  //
+  G4double Scintillator1_sizeX = 46 * mm;
+  G4double Scintillator1_sizeY = 84 * mm;
+  G4double Scintillator1_sizeZ = 15 * mm;
+
+  G4Box* solidScintillator1 =    
+  new G4Box("Scintillator1",                       //its name
+       0.5*Scintillator1_sizeX, 0.5*Scintillator1_sizeY, 0.5*Scintillator1_sizeZ);     //its size
+
+  //G4Tubs* solidScintillator1 = new G4Tubs("Scintillator1",0.,Scintillator1_sizeR,0.5*Scintillator1_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicScintillator1 =                         
+    new G4LogicalVolume(solidScintillator1,            //its solid
+                        Scintillator,        //its material
+                        "logicScintillator1");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(-1,0,37.6),         //at (0,0,0)
+                    logicScintillator1,                //its logical volume
+                    "Scintillator1",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+  //     
+  // Scintillator1_copy
+  //
+  G4RotationMatrix* rm = new G4RotationMatrix();
+ rm->rotateZ(180*deg);  
+  new G4PVPlacement(rm,                       //no rotation
+                    G4ThreeVector(45,0,37.6),         //at (0,0,0)
+                    logicScintillator1,                //its logical volume
+                    "Scintillator1",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    1,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+  //     
+  // Scintillator1_hole
+  //
+  G4double Scintillator1_hole_sizeR = 5 * mm;
+  G4double Scintillator1_hole_sizeH = 15 * mm;
+
+  G4Tubs* solidScintillator1_hole = new G4Tubs("Scintillator1_hole",0.,Scintillator1_hole_sizeR,0.5*Scintillator1_hole_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicScintillator1_hole =                         
+    new G4LogicalVolume(solidScintillator1_hole,            //its solid
+                        G4_Galactic,        //its material
+                        "logicScintillator1_hole");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(1,0,0),         //at (0,0,0)
+                    logicScintillator1_hole,                //its logical volume
+                    "Scintillator1_hole",                   //its name
+                    logicScintillator1,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+
+  //     
+  // Scintillator2
+  //
+  G4double Scintillator2_sizeX = 46 * mm;
+  G4double Scintillator2_sizeY = 84 * mm;
+  G4double Scintillator2_sizeZ = 15 * mm;
+
+  G4Box* solidScintillator2 =    
+  new G4Box("Scintillator2",                       //its name
+       0.5*Scintillator2_sizeX, 0.5*Scintillator2_sizeY, 0.5*Scintillator2_sizeZ);     //its size
+
+  //G4Tubs* solidScintillator2 = new G4Tubs("Scintillator2",0.,Scintillator2_sizeR,0.5*Scintillator2_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicScintillator2 =                         
+    new G4LogicalVolume(solidScintillator2,            //its solid
+                        Scintillator,        //its material
+                        "logicScintillator2");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(-1,0,22.6),         //at (0,0,0)
+                    logicScintillator2,                //its logical volume
+                    "Scintillator2",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+  //     
+  // Scintillator2_copy
+  //
+               
+  new G4PVPlacement(rm,                       //no rotation
+                    G4ThreeVector(45,0,22.6),         //at (0,0,0)
+                    logicScintillator2,                //its logical volume
+                    "Scintillator2",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    1,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+  //     
+  // Scintillator2_hole
+  //
+  G4double Scintillator2_hole_sizeR = 5 * mm;
+  G4double Scintillator2_hole_sizeH = 15 * mm;
+
+  G4Tubs* solidScintillator2_hole = new G4Tubs("Scintillator2_hole",0.,Scintillator2_hole_sizeR,0.5*Scintillator2_hole_sizeH,0.*deg,360.*deg);
+
+  //G4Tubs* solidScintillator2_hole = new G4Tubs("Scintillator2_hole",0.,Scintillator2_hole_sizeR,0.5*Scintillator2_hole_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicScintillator2_hole =                         
+    new G4LogicalVolume(solidScintillator2_hole,            //its solid
+                        G4_Galactic,        //its material
+                        "logicScintillator2_hole");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(1,0,0),         //at (0,0,0)
+                    logicScintillator2_hole,                //its logical volume
+                    "Scintillator2_hole",                   //its name
+                    logicScintillator2,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+  
+
+
+  //     
+  // Top_SSteel
+  //
+  G4double Kovar_holeR = 5 * mm;
+  G4double Kovar_sizeR = 19 * mm;
+  G4double Kovar_sizeH = 3.1 * mm;
+
+  G4Tubs* solidKovar = new G4Tubs("Kovar",Kovar_holeR,Kovar_sizeR,0.5*Kovar_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicKovar =                         
+    new G4LogicalVolume(solidKovar,            //its solid
+                        SSteel,        //its material
+                        "Kovar");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(0,0,8.55 * mm),         //at (0,0,0)
+                    logicKovar,                //its logical volume
+                    "Kovar",                   //its name
+                    logicDetector,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+
+  // BeWindow
+  //
+  G4double BeWindow_sizeR = 5 * mm;
+  G4double BeWindow_sizeH = 0.05 * mm;
+
+  G4Tubs* solidBeWindow = new G4Tubs("BeWindow",0.,BeWindow_sizeR,0.5*BeWindow_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicBeWindow =                         
+    new G4LogicalVolume(solidBeWindow,            //its solid
+                        G4_Be,        //its material
+                        "logicBeWindow");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(0,0,7.025),         //at (0,0,0)
+                    logicBeWindow,                //its logical volume
+                    "BeWindow",                   //its name
+                    logicDetector,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
   //     
   // Ceramics
   //
-  G4double Ceramics_sizeR = 20 * mm;
-  G4double Ceramics_sizeH = 10 * mm;
+  G4double Ceramics_sizeR = 15.25 * mm;
+  G4double Ceramics_sizeH = 14 * mm;
 
   G4Tubs* solidCeramics = new G4Tubs("Ceramics",0.,Ceramics_sizeR,0.5*Ceramics_sizeH,0.*deg,360.*deg);
       
@@ -144,11 +312,12 @@ G4VPhysicalVolume* backgroundDetectorConstruction::Construct()
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
                      
+
   //     
   // Gas
   //
-  G4double Gas_sizeR = 13.25 * mm;
-  G4double Gas_sizeH = 10 * mm;
+  G4double Gas_sizeR = 13.75 * mm;
+  G4double Gas_sizeH = 14 * mm;
 
   G4Tubs* solidGas = new G4Tubs("Gas",0.,Gas_sizeR,0.5*Gas_sizeH,0.*deg,360.*deg);
       
@@ -165,98 +334,106 @@ G4VPhysicalVolume* backgroundDetectorConstruction::Construct()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
-  //     
-  // Kovar
-  //
-  G4double Kovar_sizeR = 20 * mm;
-  G4double Kovar_sizeH = 2 * mm;
 
-  G4Tubs* solidKovar = new G4Tubs("Kovar",0.,Kovar_sizeR,0.5*Kovar_sizeH,0.*deg,360.*deg);
+  //     
+  // GasSD
+  //
+  G4double GasSD_sizeXY = 6 * mm;
+  G4double GasSD_sizeZ = 14 * mm;
+
+  G4Box* solidGasSD =    
+  new G4Box("GasSD",                       //its name
+       0.5*GasSD_sizeXY, 0.5*GasSD_sizeXY, 0.5*GasSD_sizeZ);     //its size
+
+  //G4Tubs* solidGasSD = new G4Tubs("GasSD",0.,GasSD_sizeR,0.5*GasSD_sizeH,0.*deg,360.*deg);
       
-  G4LogicalVolume* logicKovar =                         
-    new G4LogicalVolume(solidKovar,            //its solid
-                        Kovar,        //its material
-                        "Kovar");              //its name
+  G4LogicalVolume* logicGasSD =                         
+    new G4LogicalVolume(solidGasSD,            //its solid
+                        Ne_50_DME_50,        //its material
+                        "logicGasSD");              //its name
                
   new G4PVPlacement(0,                       //no rotation
-                    G4ThreeVector(0,0,6 * mm),         //at (0,0,0)
-                    logicKovar,                //its logical volume
-                    "Kovar",                   //its name
-                    logicDetector,           //its mother  volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
-  //     
-  // KovarHole
-  //
-  G4double KovarHole_sizeR = 5 * mm;
-  G4double KovarHole_sizeH = 2 * mm;
-
-  G4Tubs* solidKovarHole = new G4Tubs("KovarHole",0.,KovarHole_sizeR,0.5*KovarHole_sizeH,0.*deg,360.*deg);
-      
-  G4LogicalVolume* logicKovarHole =                         
-    new G4LogicalVolume(solidKovarHole,            //its solid
-                        G4_Galactic,        //its material
-                        "KovarHole");              //its name
-               
-  new G4PVPlacement(0,                       //no rotation
-                    G4ThreeVector(0,0,0),         //at (0,0,0)
-                    logicKovarHole,                //its logical volume
-                    "KovarHole",                   //its name
-                    logicKovar,           //its mother  volume
+                    G4ThreeVector(),         //at (0,0,0)
+                    logicGasSD,                //its logical volume
+                    "GasSD",                   //its name
+                    logicGas,           //its mother  volume
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
 
-  //     
-  // KovarCollimation
-  //
-  G4double KovarCollimation_sizeR = 6 * mm;
-  G4double KovarCollimation_sizeH = 10 * mm;
+  // //     
+  // // TopHole
+  // //
+  // G4double KovarHole_sizeR = 5 * mm;
+  // G4double KovarHole_sizeH = 3.1 * mm;
 
-  G4Tubs* solidKovarCollimation = new G4Tubs("KovarCollimation",0.,KovarCollimation_sizeR,0.5*KovarCollimation_sizeH,0.*deg,360.*deg);
+  // G4Tubs* solidKovarHole = new G4Tubs("KovarHole",0.,KovarHole_sizeR,0.5*KovarHole_sizeH,0.*deg,360.*deg);
       
-  G4LogicalVolume* logicKovarCollimation =                         
-    new G4LogicalVolume(solidKovarCollimation,            //its solid
-                        G4_Galactic,        //its material
-                        "KovarCollimation");              //its name
+  // G4LogicalVolume* logicKovarHole =                         
+  //   new G4LogicalVolume(solidKovarHole,            //its solid
+  //                       G4_Galactic,        //its material
+  //                       "KovarHole");              //its name
                
-  new G4PVPlacement(0,                       //no rotation
-                    G4ThreeVector(0,0,12),         //at (0,0,12)
-                    logicKovarCollimation,                //its logical volume
-                    "KovarCollimation",                   //its name
-                    logicDetector,           //its mother  volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+  // new G4PVPlacement(0,                       //no rotation
+  //                   G4ThreeVector(0,0,0),         //at (0,0,0)
+  //                   logicKovarHole,                //its logical volume
+  //                   "KovarHole",                   //its name
+  //                   logicKovar,           //its mother  volume
+  //                   false,                   //no boolean operation
+  //                   0,                       //copy number
+  //                   checkOverlaps);          //overlaps checking
   //     
-  // Collimation
-  //
-  G4double Collimation_sizeR = 5 * mm;
-  G4double Collimation_sizeH = 10 * mm;
 
-  G4Tubs* solidCollimation = new G4Tubs("Collimation",0.,Collimation_sizeR,0.5*Collimation_sizeH,0.*deg,360.*deg);
+
+  // //     
+  // // KovarCollimation
+  // //
+  // G4double KovarCollimation_sizeR = 6 * mm;
+  // G4double KovarCollimation_sizeH = 15.32 * mm;
+
+  // G4Tubs* solidKovarCollimation = new G4Tubs("KovarCollimation",0.,KovarCollimation_sizeR,0.5*KovarCollimation_sizeH,0.*deg,360.*deg);
       
-  G4LogicalVolume* logicCollimation =                         
-    new G4LogicalVolume(solidCollimation,            //its solid
-                        G4_Galactic,        //its material
-                        "Collimation");              //its name
+  // G4LogicalVolume* logicKovarCollimation =                         
+  //   new G4LogicalVolume(solidKovarCollimation,            //its solid
+  //                       Kovar,        //its material
+  //                       "KovarCollimation");              //its name
                
-  new G4PVPlacement(0,                       //no rotation
-                    G4ThreeVector(0,0,0),         //at (0,0,0)
-                    logicCollimation,                //its logical volume
-                    "Collimation",                   //its name
-                    logicKovarCollimation,           //its mother  volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+  // new G4PVPlacement(0,                       //no rotation
+  //                   G4ThreeVector(0,0,14.66),         //at (0,0,14.66)
+  //                   logicKovarCollimation,                //its logical volume
+  //                   "KovarCollimation",                   //its name
+  //                   logicDetector,           //its mother  volume
+  //                   false,                   //no boolean operation
+  //                   0,                       //copy number
+  //                   checkOverlaps);          //overlaps checking
+  // //     
+  // // Collimation
+  // //
+  // G4double Collimation_sizeR = 5 * mm;
+  // G4double Collimation_sizeH = 15.32* mm;
+
+  // G4Tubs* solidCollimation = new G4Tubs("Collimation",0.,Collimation_sizeR,0.5*Collimation_sizeH,0.*deg,360.*deg);
+      
+  // G4LogicalVolume* logicCollimation =                         
+  //   new G4LogicalVolume(solidCollimation,            //its solid
+  //                       G4_Galactic,        //its material
+  //                       "Collimation");              //its name
+               
+  // new G4PVPlacement(0,                       //no rotation
+  //                   G4ThreeVector(0,0,0),         //at (0,0,0)
+  //                   logicCollimation,                //its logical volume
+  //                   "Collimation",                   //its name
+  //                   logicKovarCollimation,           //its mother  volume
+  //                   false,                   //no boolean operation
+  //                   0,                       //copy number
+  //                   checkOverlaps);          //overlaps checking
   
 
   //     
-  // Kovar2
+  // Bottom Kovar2
   //
   G4double Kovar2_sizeR = 20 * mm;
-  G4double Kovar2_sizeH = 2.5 * mm;
+  G4double Kovar2_sizeH = 3 * mm;
 
   G4Tubs* solidKovar2 = new G4Tubs("Kovar2",0.,Kovar2_sizeR,0.5*Kovar2_sizeH,0.*deg,360.*deg);
       
@@ -266,39 +443,216 @@ G4VPhysicalVolume* backgroundDetectorConstruction::Construct()
                         "Kovar2");              //its name
                
   new G4PVPlacement(0,                       //no rotation
-                    G4ThreeVector(0,0,-6.25 * mm),         //at (0,0,0)
+                    G4ThreeVector(0,0,-8.5 * mm),         //at (0,0,0)
                     logicKovar2,                //its logical volume
                     "Kovar2",                   //its name
                     logicDetector,           //its mother  volume
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
+
+
+  //     
+  // shield1
+  //
+  G4double shield1_sizeX = 4 * mm;
+  G4double shield1_sizeY = 84 * mm;
+  G4double shield1_sizeZ = 50 * mm;
+
+  G4Box* solidshield1 =    
+  new G4Box("shield1",                       //its name
+       0.5*shield1_sizeX, 0.5*shield1_sizeY, 0.5*shield1_sizeZ);     //its size
+
+  //G4Tubs* solidshield1 = new G4Tubs("shield1",0.,shield1_sizeR,0.5*shield1_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicshield1 =                         
+    new G4LogicalVolume(solidshield1,            //its solid
+                        Aluminium,        //its material
+                        "logicshield1");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(-26,0,10),         //at (0,0,0)
+                    logicshield1,                //its logical volume
+                    "shield1",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(70,0,10),         //at (0,0,0)
+                    logicshield1,                //its logical volume
+                    "shield1",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    1,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+
+  //     
+  // shield2
+  //
+  G4double shield2_sizeX = 100 * mm;
+  G4double shield2_sizeY = 4 * mm;
+  G4double shield2_sizeZ = 50 * mm;
+
+  G4Box* solidshield2 =    
+  new G4Box("shield2",                       //its name
+       0.5*shield2_sizeX, 0.5*shield2_sizeY, 0.5*shield2_sizeZ);     //its size
+
+  //G4Tubs* solidshield2 = new G4Tubs("shield2",0.,shield2_sizeR,0.5*shield2_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicshield2 =                         
+    new G4LogicalVolume(solidshield2,            //its solid
+                        Aluminium,        //its material
+                        "logicshield2");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(22,44,10),         //at (0,0,0)
+                    logicshield2,                //its logical volume
+                    "shield2",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(22,-44,10),         //at (0,0,0)
+                    logicshield2,                //its logical volume
+                    "shield2",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    1,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+
+  //     
+  // shield_bottom
+  //
+  G4double shield_bottom_sizeX = 100 * mm;
+  G4double shield_bottom_sizeY = 92 * mm;
+  G4double shield_bottom_sizeZ = 4 * mm;
+
+  G4Box* solidshield_bottom =    
+  new G4Box("shield_bottom",                       //its name
+       0.5*shield_bottom_sizeX, 0.5*shield_bottom_sizeY, 0.5*shield_bottom_sizeZ);     //its size
+
+  //G4Tubs* solidshield_bottom = new G4Tubs("shield_bottom",0.,shield_bottom_sizeR,0.5*shield_bottom_sizeH,0.*deg,360.*deg);
+      
+  G4LogicalVolume* logicshield_bottom =                         
+    new G4LogicalVolume(solidshield_bottom,            //its solid
+                        Aluminium,        //its material
+                        "logicshield_bottom");              //its name
+               
+  new G4PVPlacement(0,                       //no rotation
+                    G4ThreeVector(22,0,-17),         //at (0,0,0)
+                    logicshield_bottom,                //its logical volume
+                    "shield_bottom",                   //its name
+                    logicWorld,           //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
                   
 
-  G4String GasSDname = "GasSD";
+
+
+  G4SDManager *SDManager = G4SDManager::GetSDMpointer();
+  G4String BeWindowSDname = "aBeWindowSD";
+  BeWindowSD* aBeWindowSD = new BeWindowSD(BeWindowSDname);
+  SDManager->AddNewDetector(aBeWindowSD);
+  // Setting aBeWindowSD to all logical volumes with the same name 
+  // of "logicBeWindow".
+  //SetSensitiveDetector("logicBeWindow", aBeWindowSD, true);
+  logicBeWindow->SetSensitiveDetector(aBeWindowSD);
+
+
+  G4String GasSDname = "aGasSD";
   GasSD* aGasSD = new GasSD(GasSDname);
-  G4SDManager::GetSDMpointer()->AddNewDetector(aGasSD);
+  SDManager->AddNewDetector(aGasSD);
   // Setting aGasSD to all logical volumes with the same name 
   // of "logicGas".
-  SetSensitiveDetector("logicGas", aGasSD, true);
+  //SetSensitiveDetector("logicGas", aGasSD, true);
+  logicGasSD->SetSensitiveDetector(aGasSD);
+
+
  
  
   logicWorld->SetVisAttributes (G4VisAttributes::GetInvisible());
   logicDetector->SetVisAttributes (G4VisAttributes::GetInvisible());
 
   auto GasVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
-  GasVisAtt->SetVisibility(true);
-  logicGas->SetVisAttributes(GasVisAtt);  
+  // GasVisAtt->SetVisibility(true);
+  GasVisAtt->SetForceAuxEdgeVisible(true);
+  logicGas->SetVisAttributes (G4VisAttributes::GetInvisible());//->SetVisAttributes(GasVisAtt);  
 
+  auto GasSDVisAtt= new G4VisAttributes(G4Colour(1.0,0.3,1.0));
+  // GasSDVisAtt->SetVisibility(true);
+  GasSDVisAtt->SetForceAuxEdgeVisible(true);
+  logicGasSD->SetVisAttributes (G4VisAttributes::GetInvisible());//->SetVisAttributes(GasSDVisAtt);  
 
-  auto CeramicsVisAtt= new G4VisAttributes(G4Colour(0,1.0,1.0));
-  CeramicsVisAtt->SetVisibility(true);
+  // auto KovarHoleVisAtt= new G4VisAttributes(G4Colour(0,0,0));
+  // KovarHoleVisAtt->SetForceWireframe(true);
+  // logicKovarHole->SetVisAttributes(KovarHoleVisAtt);  
+
+  auto KovarVisAtt= new G4VisAttributes(G4Colour(0.5,0.1,1.0));
+  KovarVisAtt->SetForceAuxEdgeVisible(true);
+  logicKovar->SetVisAttributes(KovarVisAtt); 
+  
+
+  // auto KovarCollimationVisAtt= new G4VisAttributes(G4Colour(0.3,0.1,0));
+  // KovarCollimationVisAtt->SetForceWireframe(true);
+  // logicKovarCollimation->SetVisAttributes(KovarCollimationVisAtt); 
+
+  auto Kovar2VisAtt= new G4VisAttributes(G4Colour(0.5,0.1,1.0));
+  Kovar2VisAtt->SetForceAuxEdgeVisible(true);
+  logicKovar2->SetVisAttributes(Kovar2VisAtt); 
+  
+  auto Scintillator1VisAtt= new G4VisAttributes(G4Colour(0.4,0.1,0.8));
+  Scintillator1VisAtt->SetForceAuxEdgeVisible(true);
+  logicScintillator1->SetVisAttributes(Scintillator1VisAtt);
+
+  auto Scintillator1_holeVisAtt= new G4VisAttributes(G4Colour(0.4,0.9,0.8));
+  Scintillator1_holeVisAtt->SetForceWireframe(true);
+  logicScintillator1_hole->SetVisAttributes(Scintillator1_holeVisAtt);
+
+  auto Scintillator2VisAtt= new G4VisAttributes(G4Colour(0.2,0.5,0.5));
+  Scintillator2VisAtt->SetForceAuxEdgeVisible(true);
+  logicScintillator2->SetVisAttributes(Scintillator2VisAtt);
+
+  auto Scintillator2_holeVisAtt= new G4VisAttributes(G4Colour(0.4,0.9,0.8));
+  Scintillator2_holeVisAtt->SetForceWireframe(true);
+  logicScintillator2_hole->SetVisAttributes(Scintillator2_holeVisAtt);
+
+  auto CeramicsVisAtt= new G4VisAttributes(G4Colour(0.3,0.1,0));
+  // CeramicsVisAtt->SetVisibility(true);
+  CeramicsVisAtt->SetForceWireframe(true);
   logicCeramics->SetVisAttributes(CeramicsVisAtt); 
 
-  auto CollimationVisAtt= new G4VisAttributes(G4Colour(1.0,0,1.0));
-  CollimationVisAtt->SetVisibility(true);
-  logicCollimation->SetVisAttributes(CollimationVisAtt); 
+  auto BeWindowVisAtt= new G4VisAttributes(G4Colour(0.3,0.7,1));
+  // BeWindowVisAtt->SetVisibility(true);
+  BeWindowVisAtt->SetForceWireframe(true);
+  logicBeWindow->SetVisAttributes(BeWindowVisAtt); 
 
+  auto shield1VisAtt= new G4VisAttributes(G4Colour(1,0.1,0.8));
+  shield1VisAtt->SetForceWireframe(true);
+  logicshield1->SetVisAttributes(shield1VisAtt);
+
+  auto shield2VisAtt= new G4VisAttributes(G4Colour(1,0.1,0.8));
+  shield2VisAtt->SetForceWireframe(true);
+  logicshield2->SetVisAttributes(shield2VisAtt);
+
+  auto shield_bottomVisAtt= new G4VisAttributes(G4Colour(1,0.1,0.8));
+  shield_bottomVisAtt->SetForceWireframe(true);
+  logicshield_bottom->SetVisAttributes(shield_bottomVisAtt);
+  
+
+  // auto CollimationVisAtt= new G4VisAttributes(G4Colour(1.0,0,1.0));
+  // // CollimationVisAtt->SetVisibility(true);
+  // CollimationVisAtt->SetForceAuxEdgeVisible(true);
+  // logicCollimation->SetVisAttributes (G4VisAttributes::GetInvisible());//->SetVisAttributes(CollimationVisAtt); 
+  
   //
   //always return the physical World
   //
@@ -454,9 +808,19 @@ void backgroundDetectorConstruction::DefineMaterials()
   Kovar->AddElement(C, fractionmass = 0.06 * perCent);
   Kovar->AddElement(Fe, fractionmass = 52.49 * perCent);
 
+  G4Material *SSteel = new G4Material("SSteel", density = 7.7 * g / cm3, ncomponents = 3);
+  SSteel->AddElement(Fe, fractionmass = 88 * perCent);
+  SSteel->AddElement(Co, fractionmass = 8 * perCent);
+  SSteel->AddElement(C, fractionmass = 4 * perCent);
+
   G4Material *ceramics = new G4Material("ceramics", density = 2.88 * g / cm3, ncomponents = 2);
   ceramics->AddElement(Al, natoms = 2);
   ceramics->AddElement(O, natoms = 3);
+
+  G4Material *Scintillator = new G4Material("Scintillator", density = 1.190 * g / cm3, ncomponents = 3);
+  Scintillator->AddElement(C, natoms = 5);
+  Scintillator->AddElement(H, natoms = 8);
+  Scintillator->AddElement(O, natoms = 2);
 
   //-----------------------------------------------------------------------------
   // define water
