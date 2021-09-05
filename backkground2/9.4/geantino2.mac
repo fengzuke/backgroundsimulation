@@ -1,0 +1,16 @@
+#GPS macro file for crab photon 
+/run/initialize
+/control/verbose 0
+/run/verbose 0
+/gps/particle gamma
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre 10. 0. 2 cm
+/gps/pos/radius 0 cm
+/gps/direction -1 0 0
+/gps/ene/type User
+/gps/ene/min 0.002 MeV
+/gps/ene/max 0.01 MeV
+/gps/hist/type energy
+/gps/hist/point 0.00901 0.0461668
+/run/beamOn 1

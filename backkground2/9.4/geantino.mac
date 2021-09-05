@@ -1,0 +1,11 @@
+#GPS macro file for crab photon 
+/run/initialize
+/control/verbose 0
+/run/verbose 0
+/gps/particle geantino
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre 0. 0. 10 cm
+/gps/pos/radius 0 cm
+/gps/direction 0 0 -1
+/run/beamOn 1
